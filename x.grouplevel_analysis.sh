@@ -11,7 +11,20 @@
 results_dir=${4}
 group_dir=${5}
 
-fslmerge -t ${group_dir}/merged_file_roi_${1}.${2}.${3}.nii.gz ${results_dir}/mean_conn_maps/_roi_${1}.${2}.${3}/_subject_id_*/corr_map_smoothed_merged_mean.nii.gz 
+
+sublist=[path/to/sublist/.txt]
+files=()
+
+while read sub
+do
+  files+=${results_dir}/mean_conn_maps/_roi_${1}.${2}.${3}/_subject_id_${sub}/corr_map_smoothed_merged_mean.nii.gz
+  files+=" "
+done < $sublist
+
+
+
+
+fslmerge -t ${group_dir}/merged_file_roi_${1}.${2}.${3}.nii.gz $files 
 
 fslmaths ${group_dir}/merged_file_roi_${1}.${2}.${3}.nii.gz -abs -Tmin -bin ${group_dir}/mask_roi_${1}.${2}.${3}.nii.gz
 
